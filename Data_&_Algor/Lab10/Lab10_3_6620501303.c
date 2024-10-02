@@ -5,7 +5,6 @@
 struct Treenode {
     int data,ht;
     struct Treenode *leftChild,*rightChild;
-    struct Treenode *mother;
 };
 struct Treenode *Root;
 
@@ -19,7 +18,7 @@ struct Treenode* pop();
 int max(int num1,int num2);
 int height(struct Treenode *x);
 int bf_node(struct Treenode *t);
-void Tree_insert(int data);
+struct Treenode* Tree_insert(struct Treenode* root, int data);
 void print_node_inorder(struct Treenode *t);
 struct Treenode* right_rotate(struct Treenode *x);
 struct Treenode* left_rotate(struct Treenode *x);
@@ -31,7 +30,7 @@ int main()  {
         printf("Insert node:");
         scanf("%d",&input);
         if(input < 0) break;
-        Tree_insert(input);
+         Root = Tree_insert(Root, input);
     }
 
     print_node_inorder(Root);
@@ -46,7 +45,6 @@ struct Treenode* createNode(int data){
     new_node->ht=0;
     new_node->leftChild =NULL;
     new_node->rightChild=NULL;
-    new_node->mother=NULL;
     return new_node;
 }
 
@@ -84,72 +82,44 @@ int bf_node(struct Treenode *t){
 }
 
 
-void Tree_insert(int data){
-    struct Treenode* x = createNode(data);
-    struct Treenode* y = NULL;
-    struct Treenode* t = Root;
-
-    while(t != NULL){
-        y = t;
-        if(data < t->data){
-            t = t->leftChild;
-        }else{
-            t = t->rightChild;
-        }
-        if(top < MAXSTACK - 1) {
-            push(y);
-        } else {
-            printf("Stack overflow during insertion. Tree may be incomplete.\n");
-            return;
-        }
-    }
-    x->mother = y;
-
-    if(y == NULL) Root = x;
-    else{
-        if(x->data < y->data) y->leftChild = x;
-        else y->rightChild = x;
+struct Treenode* Tree_insert(struct Treenode* root, int data) {
+    if (root == NULL) {
+        return createNode(data);
     }
 
-    // Balancing and height adjustment
-    while(top != -1){
-        struct Treenode* z = pop();
-        z->ht = max(height(z->leftChild), height(z->rightChild)) + 1;
-        int bf = bf_node(z);
-
-        if(bf > 1 && bf_node(z->leftChild) <= -1){
-            printf("Left-Right Double Rotate\n");
-            z->leftChild = left_rotate(z->leftChild);
-            z = right_rotate(z);
-        }
-        else if(bf < -1 && bf_node(z->rightChild) >= 1){
-            printf("Right-Left Double Rotate\n");
-            z->rightChild = right_rotate(z->rightChild);
-            z = left_rotate(z);
-        }
-        else if(bf > 1){
-            z = right_rotate(z);
-        }else if(bf < -1){
-            z = left_rotate(z);
-        }
-
-        // Update mother pointers after rotation
-        if(z->leftChild) z->leftChild->mother = z;
-        if(z->rightChild) z->rightChild->mother = z;
-
-        // Update Root if necessary
-        if(z->mother == NULL) Root = z;
-        else if(is_left_node(z)) z->mother->leftChild = z;
-        else z->mother->rightChild = z;
+    if (data < root->data) {
+        root->leftChild = Tree_insert(root->leftChild, data);
+    } else if (data > root->data) {
+        root->rightChild = Tree_insert(root->rightChild, data);
+    } else {
+        return root;
     }
+
+    root->ht = 1 + max(height(root->leftChild), height(root->rightChild));
+
+    int balance = bf_node(root);
+
+    if (balance > 1 && data < root->leftChild->data) {
+        return right_rotate(root);
+    }
+
+    if (balance < -1 && data > root->rightChild->data) {
+        return left_rotate(root);
+    }
+
+    if (balance > 1 && data > root->leftChild->data) {
+        root->leftChild = left_rotate(root->leftChild);
+        return right_rotate(root);
+    }
+
+    if (balance < -1 && data < root->rightChild->data) {
+        root->rightChild = right_rotate(root->rightChild);
+        return left_rotate(root);
+    }
+
+    return root;
 }
 
-bool is_left_node(struct Treenode *x){
-    if (x == NULL || x->mother == NULL) {
-        return false; 
-    }
-    return (x->mother->leftChild == x);
-}
 
 struct Treenode* right_rotate(struct Treenode *x){
     printf("Right Rotate at node: %d\n",x->data);
@@ -160,9 +130,6 @@ struct Treenode* right_rotate(struct Treenode *x){
     y->rightChild = x;
     x->leftChild = z;
 
-    y->mother = x->mother;
-    x->mother = y;
-    if(z) z->mother = x;
 
     y->ht = max(height(y->leftChild), height(y->rightChild)) + 1;
     x->ht = max(height(x->leftChild), height(x->rightChild)) + 1;
@@ -178,10 +145,6 @@ struct Treenode* left_rotate(struct Treenode *x){
 
     y->leftChild = x;
     x->rightChild = z;
-
-    y->mother = x->mother;
-    x->mother = y;
-    if(z) z->mother = x;
 
     y->ht = max(height(y->leftChild), height(y->rightChild)) + 1;
     x->ht = max(height(x->leftChild), height(x->rightChild)) + 1;
