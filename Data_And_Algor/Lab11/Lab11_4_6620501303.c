@@ -1,36 +1,33 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <time.h>
 
 void insert_heap(int data);
 bool is_min_heap(int *heap,int n);
-void heapify(int* heap,int n);
+void min_heapify(int* heap,int n);
 void swap(int* a, int* b);
 void print_heap_by_level(int *heap,int n);
 
 int main(){
     int input_count = 0;
     int data;
-    scanf("%d",&input_count);
-    int heap[input_count];
+    int i,n=20;
+    int heap[n];
+    srand((unsigned) time(NULL));
 
-    for(int i = 0;i < input_count ;i++){
-        scanf("%d",&heap[i]);
+
+    printf("Number before sorting\n");
+    for(int i = 0;i < n ;i++){
+        heap[i] = rand()%100+1;
+        printf("%d ",heap[i]);
     }
 
-    if(is_min_heap(heap,input_count)){
-        printf("a Min-Heap");
-        
-    }else{
-        printf("Not a Min-Heap\n");
-        heapify(heap,input_count);
-        print_heap_by_level(heap,input_count);
-
-    }
+    
 
     return 0;
 }
 
-void heapify(int* heap,int n){
+void min_heapify(int* heap,int n){
     int par_index = n/2-1;
     int left_index,right_index;
 
@@ -77,26 +74,9 @@ bool is_min_heap(int *heap,int n) {
     return true;
 }
 
-void print_heap_by_level(int *heap,int n){
-    int level = 1;
-    int current_level_node = 0;
-    for(int i=0;i < n;i++){
-        current_level_node++;
-        printf("%d ",heap[i]);
-
-        if(current_level_node == level){
-            level *= 2;
-            current_level_node = 0;
-            printf("\n");
-        }
-        
-    }
-}
 
 void swap(int* a, int* b){
     int temp = *a;
     *a = *b;
     *b = temp;
-    printf("swaped %d <-> %d\n",*a,*b);
-    
 }
