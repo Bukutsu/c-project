@@ -38,15 +38,22 @@ void heapify(int* heap,int n){
         left_index = 2*par_index+1;
         right_index = 2*par_index+2;
         while(left_index < n){
-            if(heap[par_index] <= heap[right_index] && heap[par_index] <= heap[left_index] ) break;
-            
-            if(heap[left_index] < heap[right_index] ){
-                swap(&heap[par_index],&heap[left_index]);
-                par_index = left_index;
-            }else{
-                swap(&heap[par_index],&heap[right_index]);
-                par_index = right_index;
+            int min_index = par_index;
+
+            if(heap[left_index] < heap[min_index]){
+                min_index = left_index;
             }
+
+            if(heap[right_index] < heap[min_index] && right_index < n){
+                min_index = right_index;
+            }
+
+            if(min_index == par_index) break;
+
+            swap(&heap[min_index],&heap[par_index]);
+
+
+            par_index = min_index;
             left_index = 2*par_index+1;
             right_index = 2*par_index+2;
         }
