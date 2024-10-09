@@ -8,11 +8,8 @@ struct qnode{
     struct qnode *next;
 };
 
-
 struct qnode *front = NULL;
 struct qnode *rear = NULL;
-
-
 
 void enqueue(int data,int priority);
 int dequeue(int data_to_remove);
@@ -69,16 +66,6 @@ int main()
 
     return 0;
 }
-
-// void print_node(struct qnode *head){
-//     struct qnode *ptr = head;
-//     while(ptr != NULL){
-//         printf("%d ",ptr->data);
-
-//         ptr = ptr->next;
-//     }
-//     printf("\n");
-// }
 
 void enqueue(int data,int priority){
     struct qnode *new_node = (struct qnode*)malloc(sizeof(struct qnode));

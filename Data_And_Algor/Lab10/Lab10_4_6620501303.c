@@ -9,13 +9,7 @@ struct Treenode {
 };
 struct Treenode *Root;
 
-struct Treenode *stack[MAXSTACK];
-int top = -1;
-
-
 struct Treenode* createNode(int data);
-void push(struct Treenode* data);
-struct Treenode* pop();
 int max(int num1,int num2);
 int height(struct Treenode *x);
 int bf_node(struct Treenode *t);
@@ -25,7 +19,6 @@ void print_node_preorder(struct Treenode *t);
 void print_node_postorder(struct Treenode *t);
 struct Treenode* right_rotate(struct Treenode *x);
 struct Treenode* left_rotate(struct Treenode *x);
-bool is_left_node(struct Treenode *x);
 bool is_node_found(struct Treenode *t,int key,int level);
 
 
@@ -67,25 +60,6 @@ struct Treenode* createNode(int data){
     new_node->rightChild=NULL;
     return new_node;
 }
-
-void push(struct Treenode* data){
-    if(top == MAXSTACK-1) printf("Stack Overflow\n");
-    else{
-        top++;
-        stack[top] = data;
-    }
-}
-
-struct Treenode* pop(){
-    struct Treenode* data;
-    if(top == -1) printf("Stack underflow\n");
-    else{
-        data = stack[top];
-        top--;
-    }
-    return data;
-}
-
 
 int max(int num1,int num2){
     if(num1 >= num2) return num1;
