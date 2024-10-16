@@ -9,7 +9,7 @@ void remove_min_heap(int* heap);
 void remove_max_heap(int* heap);
 void swap(int* a, int* b);
 
-int last_index = 0;
+int last_index = -1;
 
 int main(){
     int input_count = 0;
@@ -30,14 +30,14 @@ int main(){
     char choice;
     scanf("%c",&choice);
     if(choice == 'A'){
-        min_heapify(heap,n-1);
+        min_heapify(heap,n);
 
         for(int i = 0;i < n ;i++){
             printf("%d ",heap[0]);
             remove_min_heap(heap);
         }
     }else if(choice == 'D'){
-        max_heapify(heap,n-1);
+        max_heapify(heap,n);
 
         for(int i = 0;i < n ;i++){
             printf("%d ",heap[0]);
