@@ -1,5 +1,5 @@
 //6620501303 Kongyut Klongklaew 
-//
+//6620501478 Puruea Aiamsitthiphan
 
 #include <stdio.h>
 #include <stdlib.h>
