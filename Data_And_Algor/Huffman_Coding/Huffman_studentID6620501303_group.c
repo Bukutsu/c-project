@@ -44,7 +44,7 @@ int main()
     print_heap();
 
     printf("\n2.1 A Min-Heap (the less frequency, the higher priority)\n");
-    min_heapify(last_index);
+    min_heapify(last_index+1);
     print_heap();
 
     printf("\n2.2 A Huffman Tree\n");
@@ -163,7 +163,7 @@ struct huffman_node* dequeue() {
     struct huffman_node* root = heap[0];
     heap[0] = heap[last_index];
     last_index--;
-    min_heapify(last_index);
+    min_heapify(last_index+1);
     
     return root;
 }
@@ -172,7 +172,7 @@ void enqueue(struct huffman_node* root){
     last_index++;
     heap[last_index] = root; 
 
-    min_heapify(last_index);
+    min_heapify(last_index+1);
 }
 
 void print_huffman_code(struct huffman_node* root,int array[MAXINPUT],int top){
