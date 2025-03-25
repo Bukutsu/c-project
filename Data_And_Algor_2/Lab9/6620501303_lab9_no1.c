@@ -1,5 +1,6 @@
 //6620501303 Kongyut Klongklaew 712
 #include <stdio.h>
+#include <stdlib.h>
 
 struct edge{
     int u;
@@ -8,11 +9,9 @@ struct edge{
 };
 
 int compare(const void *a, const void *b) {
-
-    struct edge *edgeA = (struct edge *)a;
-    struct edge *edgeB = (struct edge *)b;
-
-    return (edgeA->w - edgeB->w);
+    const struct edge *e1 = a;
+    const struct edge *e2 = b;
+    return e1->w - e2->w;
 }
 
 int find_set(int v,int *parent){
@@ -25,6 +24,38 @@ void union_set(int a,int b,int *parent){
     b = find_set(b,parent);
     if(a != b) parent[b] = a;
 
+}
+
+// Kruskal's algorithm
+void kruskal_algo(int *parent,struct edge *edges,struct edge *MST,int E,int V,int n){
+        
+
+        //make set
+        for (int i = 0; i < V; i++) {
+            parent[i] = i;
+        }
+    
+        //sort edges
+        qsort(edges,E,sizeof(edges[0]),compare);
+    
+    
+        //union-find
+        for (int i = 0; i < E;i++){
+            if(find_set(edges[i].u,parent) != find_set(edges[i].v,parent)){
+                MST[n] = edges[i];
+                n++;
+                union_set(edges[i].u,edges[i].v,parent);
+            }
+        }
+    
+        //print
+        int weight = 0;
+        for (int i = 0; i < n; i++) {
+            printf("%d - %d \t%d \n", MST[i].u, MST[i].v, MST[i].w);
+            weight += MST[i].w;
+        }
+    
+        printf("MST Weight = %d\n",weight);
 }
 
 int main() {
@@ -53,44 +84,7 @@ int main() {
     printf("====MST====\n");
     printf("Edge\tWeight\n");
 
-    // Kruskal's algorithm
-
-        //make set
-    for (int i = 0; i < V; i++) {
-        parent[i] = i;
-    }
-
-        //sort edges
-    qsort(edges,E,sizeof(edges[0]),compare);
-
-
-//    for (int i = 0; i < E; i++) {
-//        for(int j = 0;j < E - 1;j++){
-//            if(edges[j].w > edges[j + 1].w){
-//                struct edge temp = edges[j];
-//                edges[j] = edges[j + 1];
-//                edges[j + 1] = temp;
-//            }
-//        }
-//    }
-
-        //union-find
-    for (int i = 0; i < E;i++){
-        if(find_set(edges[i].u,parent) != find_set(edges[i].v,parent)){
-            MST[n] = edges[i];
-            n++;
-            union_set(edges[i].u,edges[i].v,parent);
-        }
-    }
-
-        //print
-    int weight = 0;
-    for (int i = 0; i < n; i++) {
-        printf("%d - %d \t%d \n", MST[i].u, MST[i].v, MST[i].w);
-        weight += MST[i].w;
-    }
-
-    printf("MST Weight = %d",weight);
+    kruskal_algo(parent,edges,MST,E,V,n);
 
     return 0;
 }

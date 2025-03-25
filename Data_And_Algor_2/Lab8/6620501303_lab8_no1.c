@@ -1,24 +1,55 @@
 //6620501303 Kongyut Klongklaew 712
 #include <stdio.h>
 #include <limits.h>
+#define INF 9999
 
-int V;
+int minIndex(int key[], int inMST[],int v) {
+    int min = INF, min_index;
 
-int minIndex(int key[], int inMST[]) {
-    int min = INT_MAX, min_index;
-
-    for (int v = 0; v < V; v++) {
-        if (inMST[v] == 0 && key[v] < min) {
-            min = key[v];
-            min_index = v;
+    for (int i = 0; i < v; i++) {
+        if (inMST[i] == 0 && key[i] < min) {
+            min = key[i];
+            min_index = i;
         }
     }
 
     return min_index;
 }
 
+void prim_algo(int v,int G[v][v]){
+    int d[v],p[v],in_MST[v];
+
+    for(int i = 0;i < v;i++){
+        d[i] = INF; p[i] = -1;
+        in_MST[i] = 0;
+    }
+    
+    d[0] = 0;
+
+    for (int i = 0; i < v; i++)
+    {
+        int u = minIndex(d,in_MST,v);
+        in_MST[u] = 1;
+        for(int j = 0; j < v;j++){
+            if(G[u][j] && !in_MST[j] && G[u][j] < d[j]){
+                d[j] = G[u][j];
+                p[j] = u;
+            }
+        }
+
+    }
+
+    int weight = 0;
+    for (int i = 1; i < v; i++) {
+        printf("%d - %d \t%d \n", p[i], i, G[i][p[i]]);
+        weight += G[i][p[i]];
+    }
+
+    printf("MST Weight = %d\n",weight);
+}
+
 int main() {
-    int E;
+    int E,V;
 
     printf("Enter Number of Vertex: ");
     scanf("%d", &V);
@@ -47,38 +78,7 @@ int main() {
     printf("Edge\tWeight\n");
 
     // Prim's algorithm
-    int d[V];
-    int p[V];
-    int inMST[V];
-
-
-    for (int v = 0; v < V; v++) {
-        d[v] = INT_MAX;
-        p[v] = -1;
-        inMST[v] = 0;
-    }
-
-    d[0] = 0;
-
-    for (int i = 0; i < V - 1; i++) {
-        int u = minIndex(d, inMST);
-        inMST[u] = 1;
-
-        for (int v = 0; v < V; v++) {
-            if (G[u][v] && inMST[v] == 0 && G[u][v] < d[v]) {
-                d[v] = G[u][v];
-                p[v] = u;
-            }
-        }
-    }
-
-    int weight = 0;
-    for (int i = 1; i < V; i++) {
-        printf("%d - %d \t%d \n", p[i], i, G[i][p[i]]);
-        weight += G[i][p[i]];
-    }
-
-    printf("MST Weight = %d",weight);
+    prim_algo(V,G);
 
     return 0;
 }
